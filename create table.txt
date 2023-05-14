@@ -1,0 +1,154 @@
+create table manager(
+mgrid int primary key,
+mname varchar(20),
+mobile char(15)
+);
+
+create table customer(
+custid int primary key,
+custname varchar(20),
+mgrid int,
+address varchar(20),
+constraint fk_mgrid foreign key (mgrid) references manager(mgrid)
+on delete set null
+on update cascade
+);
+
+create table account(
+actid int primary key,
+custid int,
+type varchar(10),
+balance double(9,2),
+constraint fk_custid foreign key (custid) references customer(custid)
+on delete set null
+on update cascade
+);
+
+mysql> insert into manager values(100,'tanaya',0100020);
+
+
+mysql> insert into manager values(101,'ram',0102020);
+
+
+mysql> insert into manager values(103,'raj',0103030);
+
+
+mysql> insert into customer values(200,'raju',100,'pune');
+
+
+mysql> insert into customer values(202,'rama',101,'mumbai');
+
+
+mysql> insert into customer values(203,'karan',101,'nashik');
+
+
+mysql> insert into customer values(204,'kirti',100,'nashik');
+
+mysql> insert into account values(1000,200,'saving',2000);
+
+
+mysql> insert into account values(1001,200,'dmat',2050);
+
+
+mysql> insert into account values(1002,203,'dmat',3023);
+
+
+mysql> insert into account values(1003,202,'current',4000);
+
+
+
+------------------------------------------------------------------------------
+
+
+1)  Display cusid, name, acid, balance, manager id for all customers
+
+ Select c.custid,c.custname,a.actid,a.balance,c.mgrid
+    -> From customer c, account a
+    -> where c.custid=a.custid;
+
+
+2) Display cusid, name, acid, balance, manager details for all customers who stays in nashik
+
+Select c.custid,c.custname,a.actid,a.balance,c.mgrid
+    -> From customer c, account a
+    -> where c.custid=a.custid and c.address='nashik';
+
+
+3) Display custid, name, acid, balance, manager details for all customers whose relation manager is tanaya
+
+Select c.custid,c.custname, a.actid, a.balance, m.mgrid,m.mname
+    -> from customer c , account a ,manager m
+    -> where c.custid=a.custid and c.mgrid=m.mgrid and m.mname='tanaya';
+
+
+4) Display custid, name, actid, balance for all customers whose relation
+ manager name starts with r
+mysql> Select c.custid,c.custname, a.actid, a.balance,m.mname
+    -> from customer c, account a, manager m
+    -> where c.custid=a.custid and m.mgrid=c.mgrid and m.mname regexp '^r.*';
+
+
+5) Display all customer details and account details who has demat account
+mysql> select *
+    -> from customer c,account a where c.custid=a.custid and a.type='dmat';
+
+
+6) Display all manager details and customer details of all customers who has saving account
+
+7) Display all account details and customer details whose balance > 3000 and customer stays in
+pune
+
+8) Display all customer details , manager details also display all managers who is not relation
+manager of any customer
+select *
+  from customer c  right join manager m 
+  on c.mgrid=m.mgrid ;
+
+
+9) Display all customer details , account details also display all customers who has not opened
+any account
+select *
+  from customer c left join account a 
+  on c.custid=a.custid;    //where a.actid is null
+
+
+10) Display all customer details , account details and manager details, also display all customers
+who has not opened any account, and also display all managers who is not relation manager
+for any customer
+mysql> select c.custid,c.custname,a.actid,a.balance,m.mgrid,m.mname
+    -> from customer c left join account a on c.custid=a.custid
+    -> left join manager m on c.mgrid=m.mgrid
+    -> union
+    -> select c.custid,c.custname,null,null,m.mgrid,m.mname
+    -> from customer c right join manager m on c.mgrid=m.mgrid
+    -> where c.custid is null;
+
+
+11) To find all managers who is not relation manager for any customer.
+mysql>select m.mgrid,m.mname,c.custid,c.custname
+    -> from manager m left join customer c
+    -> on c.mgrid=m.mgrid;
+
+
+12) Display all manager details whose customer stays in nashik
+mysql> update customer set address='kolhapur' where address='mumbai';
+
+
+
+
+select empno,ename,job,mgr,hiredate,sal,comm,e.deptno,dname,loc
+from emp e,dept d
+where e.deptno=d.deptno;
+
+
+create table course(
+cid int primary key,
+cname varchar(20),
+fid int,
+rid int,
+constraint fk_fid foreign key (fid) references faculty(fid),
+constraint fk_cid foreign key (cid) references course(cid)
+
+
+
+insert into course values(121,'dbda',10,100),(131,'dac',NULL,101),(151,'ditiss',12,105);
